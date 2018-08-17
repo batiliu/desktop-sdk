@@ -839,6 +839,7 @@ public:
     }
 
     virtual bool OnConsoleMessage(CefRefPtr<CefBrowser> browser,
+                                  cef_log_severity_t level,
                                   const CefString& message,
                                   const CefString& source,
                                   int line) OVERRIDE
@@ -932,6 +933,9 @@ public:
 
     // Set fullscreen mode.
     virtual void OnSetFullscreen(bool fullscreen) OVERRIDE {}
+
+    // AutoResize
+    virtual void OnAutoResize(const CefSize& new_size) OVERRIDE {}
 
     // Set the loading state.
     virtual void OnSetLoadingState(bool isLoading,
@@ -1254,6 +1258,7 @@ public:
     virtual bool OnBeforeBrowse(CefRefPtr<CefBrowser> browser,
                                 CefRefPtr<CefFrame> frame,
                                 CefRefPtr<CefRequest> request,
+                                bool user_gesture,
                                 bool is_redirect)
     {
         std::wstring sUrl = request->GetURL().ToWString();
@@ -1354,7 +1359,7 @@ public:
 #endif
         }
 
-        bool ret = client::ClientHandler::OnBeforeBrowse(browser, frame, request, is_redirect);
+        bool ret = client::ClientHandler::OnBeforeBrowse(browser, frame, request, user_gesture, is_redirect);
         if (NULL != m_pParent)
         {            
             m_pParent->resizeEvent();
@@ -2841,9 +2846,10 @@ about.appendChild(ifr);\n\
     }
 
     virtual bool OnConsoleMessage(CefRefPtr<CefBrowser> browser,
-                          const CefString& message,
-                          const CefString& source,
-                          int line) OVERRIDE
+                                  cef_log_severity_t level,
+                                  const CefString& message,
+                                  const CefString& source,
+                                  int line) OVERRIDE
     {
         return false;
     }
@@ -3488,6 +3494,9 @@ require.load = function (context, moduleName, url) {\n\
 
     // Set fullscreen mode.
     virtual void OnSetFullscreen(bool fullscreen) OVERRIDE {}
+
+    // AutoResize
+    virtual void OnAutoResize(const CefSize& new_size) OVERRIDE {}
 
     // Set the loading state.
     virtual void OnSetLoadingState(bool isLoading,

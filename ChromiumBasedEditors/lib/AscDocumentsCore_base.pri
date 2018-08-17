@@ -99,8 +99,6 @@ HEADERS += \
     $$CEF_SRC_PATH/include/capi/cef_find_handler_capi.h \
     $$CEF_SRC_PATH/include/capi/cef_focus_handler_capi.h \
     $$CEF_SRC_PATH/include/capi/cef_frame_capi.h \
-    $$CEF_SRC_PATH/include/capi/cef_geolocation_capi.h \
-    $$CEF_SRC_PATH/include/capi/cef_geolocation_handler_capi.h \
     $$CEF_SRC_PATH/include/capi/cef_image_capi.h \
     $$CEF_SRC_PATH/include/capi/cef_jsdialog_handler_capi.h \
     $$CEF_SRC_PATH/include/capi/cef_keyboard_handler_capi.h \
@@ -143,6 +141,9 @@ HEADERS += \
     $$CEF_SRC_PATH/include/capi/cef_x509_certificate_capi.h \
     $$CEF_SRC_PATH/include/capi/cef_xml_reader_capi.h \
     $$CEF_SRC_PATH/include/capi/cef_zip_reader_capi.h \
+    $$CEF_SRC_PATH/include/capi/cef_extension_capi.h \
+    $$CEF_SRC_PATH/include/capi/cef_extension_handler_capi.h \
+    $$CEF_SRC_PATH/include/capi/cef_server_capi.h \
     $$CEF_SRC_PATH/include/internal/cef_export.h \
     $$CEF_SRC_PATH/include/internal/cef_logging_internal.h \
     $$CEF_SRC_PATH/include/internal/cef_ptr.h \
@@ -213,8 +214,6 @@ HEADERS += \
     $$CEF_SRC_PATH/include/cef_find_handler.h \
     $$CEF_SRC_PATH/include/cef_focus_handler.h \
     $$CEF_SRC_PATH/include/cef_frame.h \
-    $$CEF_SRC_PATH/include/cef_geolocation.h \
-    $$CEF_SRC_PATH/include/cef_geolocation_handler.h \
     $$CEF_SRC_PATH/include/cef_image.h \
     $$CEF_SRC_PATH/include/cef_jsdialog_handler.h \
     $$CEF_SRC_PATH/include/cef_keyboard_handler.h \
@@ -260,7 +259,10 @@ HEADERS += \
     $$CEF_SRC_PATH/include/cef_web_plugin.h \
     $$CEF_SRC_PATH/include/cef_x509_certificate.h \
     $$CEF_SRC_PATH/include/cef_xml_reader.h \
-    $$CEF_SRC_PATH/include/cef_zip_reader.h
+    $$CEF_SRC_PATH/include/cef_zip_reader.h \
+    $$CEF_SRC_PATH/include/cef_extension.h \
+    $$CEF_SRC_PATH/include/cef_extension_handler.h \
+    $$CEF_SRC_PATH/include/cef_server.h
 
 HEADERS += \
     $$CEF_SRC_PATH/libcef_dll/cpptoc/test/translator_test_ref_ptr_client_child_cpptoc.h \
@@ -295,8 +297,6 @@ HEADERS += \
     $$CEF_SRC_PATH/libcef_dll/cpptoc/end_tracing_callback_cpptoc.h \
     $$CEF_SRC_PATH/libcef_dll/cpptoc/find_handler_cpptoc.h \
     $$CEF_SRC_PATH/libcef_dll/cpptoc/focus_handler_cpptoc.h \
-    $$CEF_SRC_PATH/libcef_dll/cpptoc/geolocation_handler_cpptoc.h \
-    $$CEF_SRC_PATH/libcef_dll/cpptoc/get_geolocation_callback_cpptoc.h \
     $$CEF_SRC_PATH/libcef_dll/cpptoc/jsdialog_handler_cpptoc.h \
     $$CEF_SRC_PATH/libcef_dll/cpptoc/keyboard_handler_cpptoc.h \
     $$CEF_SRC_PATH/libcef_dll/cpptoc/life_span_handler_cpptoc.h \
@@ -327,6 +327,7 @@ HEADERS += \
     $$CEF_SRC_PATH/libcef_dll/cpptoc/web_plugin_info_visitor_cpptoc.h \
     $$CEF_SRC_PATH/libcef_dll/cpptoc/web_plugin_unstable_callback_cpptoc.h \
     $$CEF_SRC_PATH/libcef_dll/cpptoc/write_handler_cpptoc.h \
+    $$CEF_SRC_PATH/libcef_dll/cpptoc/extension_handler_cpptoc.h \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/test/translator_test_ctocpp.h \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/test/translator_test_ref_ptr_library_child_child_ctocpp.h \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/test/translator_test_ref_ptr_library_child_ctocpp.h \
@@ -347,6 +348,7 @@ HEADERS += \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/views/textfield_ctocpp.h \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/views/view_ctocpp.h \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/views/window_ctocpp.h \
+    $$CEF_SRC_PATH/libcef_dll/ctocpp/views/menu_button_pressed_lock_ctocpp.h \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/auth_callback_ctocpp.h \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/before_download_callback_ctocpp.h \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/binary_value_ctocpp.h \
@@ -405,6 +407,9 @@ HEADERS += \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/x509certificate_ctocpp.h \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/xml_reader_ctocpp.h \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/zip_reader_ctocpp.h \
+    $$CEF_SRC_PATH/libcef_dll/ctocpp/extension_ctocpp.h \
+    $$CEF_SRC_PATH/libcef_dll/ctocpp/get_extension_resource_callback_ctocpp.h \
+    $$CEF_SRC_PATH/libcef_dll/ctocpp/server_ctocpp.h \
     $$CEF_SRC_PATH/libcef_dll/wrapper/cef_browser_info_map.h \
     $$CEF_SRC_PATH/libcef_dll/ptr_util.h \
     $$CEF_SRC_PATH/libcef_dll/transfer_util.h \
@@ -453,8 +458,6 @@ SOURCES += \
     $$CEF_SRC_PATH/libcef_dll/cpptoc/end_tracing_callback_cpptoc.cc \
     $$CEF_SRC_PATH/libcef_dll/cpptoc/find_handler_cpptoc.cc \
     $$CEF_SRC_PATH/libcef_dll/cpptoc/focus_handler_cpptoc.cc \
-    $$CEF_SRC_PATH/libcef_dll/cpptoc/geolocation_handler_cpptoc.cc \
-    $$CEF_SRC_PATH/libcef_dll/cpptoc/get_geolocation_callback_cpptoc.cc \
     $$CEF_SRC_PATH/libcef_dll/cpptoc/jsdialog_handler_cpptoc.cc \
     $$CEF_SRC_PATH/libcef_dll/cpptoc/keyboard_handler_cpptoc.cc \
     $$CEF_SRC_PATH/libcef_dll/cpptoc/life_span_handler_cpptoc.cc \
@@ -485,6 +488,9 @@ SOURCES += \
     $$CEF_SRC_PATH/libcef_dll/cpptoc/web_plugin_info_visitor_cpptoc.cc \
     $$CEF_SRC_PATH/libcef_dll/cpptoc/web_plugin_unstable_callback_cpptoc.cc \
     $$CEF_SRC_PATH/libcef_dll/cpptoc/write_handler_cpptoc.cc \
+    $$CEF_SRC_PATH/libcef_dll/cpptoc/extension_handler_cpptoc.cc \
+    $$CEF_SRC_PATH/libcef_dll/cpptoc/server_handler_cpptoc.cc \
+    $$CEF_SRC_PATH/libcef_dll/cpptoc/v8array_buffer_release_callback_cpptoc.cc \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/test/translator_test_ctocpp.cc \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/test/translator_test_ref_ptr_library_child_child_ctocpp.cc \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/test/translator_test_ref_ptr_library_child_ctocpp.cc \
@@ -505,6 +511,7 @@ SOURCES += \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/views/textfield_ctocpp.cc \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/views/view_ctocpp.cc \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/views/window_ctocpp.cc \
+    $$CEF_SRC_PATH/libcef_dll/ctocpp/views/menu_button_pressed_lock_ctocpp.cc \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/auth_callback_ctocpp.cc \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/before_download_callback_ctocpp.cc \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/binary_value_ctocpp.cc \
@@ -522,7 +529,6 @@ SOURCES += \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/drag_data_ctocpp.cc \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/file_dialog_callback_ctocpp.cc \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/frame_ctocpp.cc \
-    $$CEF_SRC_PATH/libcef_dll/ctocpp/geolocation_callback_ctocpp.cc \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/image_ctocpp.cc \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/jsdialog_callback_ctocpp.cc \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/list_value_ctocpp.cc \
@@ -561,6 +567,9 @@ SOURCES += \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/x509certificate_ctocpp.cc \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/xml_reader_ctocpp.cc \
     $$CEF_SRC_PATH/libcef_dll/ctocpp/zip_reader_ctocpp.cc \
+    $$CEF_SRC_PATH/libcef_dll/ctocpp/extension_ctocpp.cc \
+    $$CEF_SRC_PATH/libcef_dll/ctocpp/get_extension_resource_callback_ctocpp.cc \
+    $$CEF_SRC_PATH/libcef_dll/ctocpp/server_ctocpp.cc \
     $$CEF_SRC_PATH/libcef_dll/wrapper/cef_byte_read_handler.cc \
     $$CEF_SRC_PATH/libcef_dll/wrapper/cef_closure_task.cc \
     $$CEF_SRC_PATH/libcef_dll/wrapper/cef_message_router.cc \
@@ -624,7 +633,8 @@ SOURCES += \
     $$CEF_SRC_PATH/tests/cefclient/browser/test_runner.cc \
     $$CEF_SRC_PATH/tests/cefclient/browser/urlrequest_test.cc \
     $$CEF_SRC_PATH/tests/cefclient/browser/window_test.cc \
-    $$CEF_SRC_PATH/tests/cefclient/browser/window_test_runner.cc
+    $$CEF_SRC_PATH/tests/cefclient/browser/window_test_runner.cc \
+    $$CEF_SRC_PATH/tests/cefclient/browser/server_test.cc
 
 # BROWSER_SHARED_BROWSER
 HEADERS += \
@@ -633,7 +643,9 @@ HEADERS += \
     $$CEF_SRC_PATH/tests/shared/browser/main_message_loop.h \
     $$CEF_SRC_PATH/tests/shared/browser/main_message_loop_external_pump.h \
     $$CEF_SRC_PATH/tests/shared/browser/main_message_loop_std.h \
-    $$CEF_SRC_PATH/tests/shared/browser/resource_util.h
+    $$CEF_SRC_PATH/tests/shared/browser/file_util.h \
+    $$CEF_SRC_PATH/tests/shared/browser/extension_util.h \
+    $$CEF_SRC_PATH/tests/cefclient/browser/image_cache.h
 
 SOURCES += \
     $$CEF_SRC_PATH/tests/shared/browser/client_app_browser.cc \
@@ -641,7 +653,9 @@ SOURCES += \
     $$CEF_SRC_PATH/tests/shared/browser/main_message_loop.cc \
     $$CEF_SRC_PATH/tests/shared/browser/main_message_loop_external_pump.cc \
     $$CEF_SRC_PATH/tests/shared/browser/main_message_loop_std.cc \
-    $$CEF_SRC_PATH/tests/shared/browser/resource_util.cc
+    $$CEF_SRC_PATH/tests/shared/browser/file_util.cc \
+    $$CEF_SRC_PATH/tests/shared/browser/extension_util.cc \
+    $$CEF_SRC_PATH/tests/cefclient/browser/image_cache.cc
 
 # COMMON
 HEADERS += \
