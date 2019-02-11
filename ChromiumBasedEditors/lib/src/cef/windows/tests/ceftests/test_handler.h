@@ -59,7 +59,6 @@ class TestHandler : public CefClient,
                     public CefDisplayHandler,
                     public CefDownloadHandler,
                     public CefDragHandler,
-                    public CefGeolocationHandler,
                     public CefJSDialogHandler,
                     public CefLifeSpanHandler,
                     public CefLoadHandler,
@@ -156,9 +155,6 @@ class TestHandler : public CefClient,
   CefRefPtr<CefDisplayHandler> GetDisplayHandler() override { return this; }
   CefRefPtr<CefDownloadHandler> GetDownloadHandler() override { return this; }
   CefRefPtr<CefDragHandler> GetDragHandler() override { return this; }
-  CefRefPtr<CefGeolocationHandler> GetGeolocationHandler() override {
-    return this;
-  }
   CefRefPtr<CefJSDialogHandler> GetJSDialogHandler() override { return this; }
   CefRefPtr<CefLifeSpanHandler> GetLifeSpanHandler() override { return this; }
   CefRefPtr<CefLoadHandler> GetLoadHandler() override { return this; }
@@ -185,6 +181,9 @@ class TestHandler : public CefClient,
       CefRefPtr<CefBrowser> browser,
       CefRefPtr<CefFrame> frame,
       CefRefPtr<CefRequest> request) override;
+
+  void OnRenderProcessTerminated(CefRefPtr<CefBrowser> browser,
+                                 TerminationStatus status) override;
 
   // These methods should only be used if at most one non-popup browser exists.
   CefRefPtr<CefBrowser> GetBrowser();

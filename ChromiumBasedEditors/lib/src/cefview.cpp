@@ -970,6 +970,7 @@ public:
     }
 
     virtual bool OnConsoleMessage(CefRefPtr<CefBrowser> browser,
+                                  cef_log_severity_t level,
                                   const CefString& message,
                                   const CefString& source,
                                   int line) OVERRIDE
@@ -1072,9 +1073,7 @@ public:
     // Set the draggable regions.
     virtual void OnSetDraggableRegions(const std::vector<CefDraggableRegion>& regions) OVERRIDE {}
 
-#ifdef CEF_3202
     virtual void OnAutoResize(const CefSize& new_size) OVERRIDE {}
-#endif
 
 public:
     IMPLEMENT_REFCOUNTING(CCefFileDownloader_Private);
@@ -1471,6 +1470,7 @@ public:
     virtual bool OnBeforeBrowse(CefRefPtr<CefBrowser> browser,
                                 CefRefPtr<CefFrame> frame,
                                 CefRefPtr<CefRequest> request,
+                                bool user_gesture,
                                 bool is_redirect)
     {
         std::wstring sUrl = request->GetURL().ToWString();
@@ -1657,7 +1657,7 @@ public:
 #endif
         }
 
-        bool ret = client::ClientHandler::OnBeforeBrowse(browser, frame, request, is_redirect);
+        bool ret = client::ClientHandler::OnBeforeBrowse(browser, frame, request, user_gesture, is_redirect);
         if (NULL != m_pParent)
         {            
             m_pParent->resizeEvent();
@@ -3350,6 +3350,7 @@ public:
     }
 
     virtual bool OnConsoleMessage(CefRefPtr<CefBrowser> browser,
+                          cef_log_severity_t level,
                           const CefString& message,
                           const CefString& source,
                           int line) OVERRIDE
@@ -4072,9 +4073,7 @@ require.load = function (context, moduleName, url) {\n\
     // Set the draggable regions.
     virtual void OnSetDraggableRegions(const std::vector<CefDraggableRegion>& regions) OVERRIDE {}
 
-#ifdef CEF_3202
     virtual void OnAutoResize(const CefSize& new_size) OVERRIDE {}
-#endif
 
 public:
     IMPLEMENT_REFCOUNTING(CAscClientHandler);

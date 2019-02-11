@@ -158,15 +158,11 @@ class TestSchemeHandler : public TestHandler {
                    const CefString& errorText,
                    const CefString& failedUrl) override {
     test_results_->got_error.yes();
-#if defined(OS_LINUX)
-    // CustomStandardXHR* tests are flaky on Linux, sometimes returning
-    // ERR_ABORTED. Make the tests less flaky by also accepting that value.
-    if (!(test_results_->expected_error_code == 0 && errorCode == ERR_ABORTED))
+    // Tests sometimes also fail with ERR_ABORTED.
+    if (!(test_results_->expected_error_code == 0 &&
+          errorCode == ERR_ABORTED)) {
       EXPECT_EQ(test_results_->expected_error_code, errorCode);
-#else
-    // Check that the error code matches the expectation.
-    EXPECT_EQ(test_results_->expected_error_code, errorCode);
-#endif
+    }
     DestroyTest();
   }
 
@@ -1445,8 +1441,8 @@ TEST(SchemeHandlerTest, CustomStandardXHRDifferentOriginRedirectSync) {
   EXPECT_TRUE(g_TestResults.got_read);
   EXPECT_TRUE(g_TestResults.got_output);
   EXPECT_TRUE(g_TestResults.got_sub_redirect);
-  EXPECT_FALSE(g_TestResults.got_sub_request);
-  EXPECT_FALSE(g_TestResults.got_sub_read);
+  EXPECT_TRUE(g_TestResults.got_sub_request);
+  EXPECT_TRUE(g_TestResults.got_sub_read);
   EXPECT_FALSE(g_TestResults.got_sub_success);
 
   ClearTestSchemes();
@@ -1480,10 +1476,8 @@ TEST(SchemeHandlerTest, CustomStandardXHRDifferentOriginRedirectAsync) {
   ClearTestSchemes();
 }
 
-// Test that a custom standard scheme cannot generate cross-domain XHR requests
-// that perform redirects when using the cross-origin whitelist. This is due to
-// an explicit check in SyncResourceHandler::OnRequestRedirected() and does not
-// represent ideal behavior.
+// Test that a custom standard scheme can generate cross-domain XHR requests
+// that perform redirects when using the cross-origin whitelist.
 TEST(SchemeHandlerTest,
      CustomStandardXHRDifferentOriginRedirectWithWhitelistSync) {
   RegisterTestScheme("customstd", "test1");
@@ -1507,9 +1501,9 @@ TEST(SchemeHandlerTest,
   EXPECT_TRUE(g_TestResults.got_read);
   EXPECT_TRUE(g_TestResults.got_output);
   EXPECT_TRUE(g_TestResults.got_sub_redirect);
-  EXPECT_FALSE(g_TestResults.got_sub_request);
-  EXPECT_FALSE(g_TestResults.got_sub_read);
-  EXPECT_FALSE(g_TestResults.got_sub_success);
+  EXPECT_TRUE(g_TestResults.got_sub_request);
+  EXPECT_TRUE(g_TestResults.got_sub_read);
+  EXPECT_TRUE(g_TestResults.got_sub_success);
 
   EXPECT_TRUE(CefClearCrossOriginWhitelist());
   WaitForUIThread();

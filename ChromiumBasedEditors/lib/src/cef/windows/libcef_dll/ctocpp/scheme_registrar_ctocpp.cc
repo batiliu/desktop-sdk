@@ -1,4 +1,4 @@
-// Copyright (c) 2017 The Chromium Embedded Framework Authors. All rights
+// Copyright (c) 2018 The Chromium Embedded Framework Authors. All rights
 // reserved. Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 //
@@ -9,13 +9,14 @@
 // implementations. See the translator.README.txt file in the tools directory
 // for more information.
 //
-// $hash=3d60233df1edf4d3afba07d63a5e56cddc791430$
+// $hash=f44c706c53363ba0c2657a0fcd8a2b50bb37ccd7$
 //
 
 #include "libcef_dll/ctocpp/scheme_registrar_ctocpp.h"
 
 // VIRTUAL METHODS - Body may be edited by hand.
 
+NO_SANITIZE("cfi-icall")
 bool CefSchemeRegistrarCToCpp::AddCustomScheme(const CefString& scheme_name,
                                                bool is_standard,
                                                bool is_local,

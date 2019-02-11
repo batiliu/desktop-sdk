@@ -78,7 +78,8 @@ set(CEFSIMPLE_RESOURCES_SRCS
 # Target executable names.
 set(CEF_TARGET "cefsimple")
 if(OS_MACOSX)
-  set(CEF_HELPER_TARGET "cefsimple Helper")
+  set(CEF_HELPER_TARGET "cefsimple_Helper")
+  set(CEF_HELPER_OUTPUT_NAME "cefsimple Helper")
 endif()
 
 # Logical target used to link the libcef library.
@@ -120,7 +121,7 @@ endif()
 if(OS_MACOSX)
   # Output paths for the app bundles.
   set(CEF_APP "${CEF_TARGET_OUT_DIR}/${CEF_TARGET}.app")
-  set(CEF_HELPER_APP "${CEF_TARGET_OUT_DIR}/${CEF_HELPER_TARGET}.app")
+  set(CEF_HELPER_APP "${CEF_TARGET_OUT_DIR}/${CEF_HELPER_OUTPUT_NAME}.app")
 
   # Variable referenced from Info.plist files.
   set(PRODUCT_NAME "${CEF_TARGET}")
@@ -132,6 +133,7 @@ if(OS_MACOSX)
   target_link_libraries(${CEF_HELPER_TARGET} libcef_lib libcef_dll_wrapper ${CEF_STANDARD_LIBS})
   set_target_properties(${CEF_HELPER_TARGET} PROPERTIES
     MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/mac/helper-Info.plist
+    OUTPUT_NAME ${CEF_HELPER_OUTPUT_NAME}
     )
 
   # Fix the framework rpath in the helper executable.
@@ -143,7 +145,6 @@ if(OS_MACOSX)
   add_dependencies(${CEF_TARGET} libcef_dll_wrapper "${CEF_HELPER_TARGET}")
   target_link_libraries(${CEF_TARGET} libcef_lib libcef_dll_wrapper ${CEF_STANDARD_LIBS})
   set_target_properties(${CEF_TARGET} PROPERTIES
-    RESOURCE "${CEFSIMPLE_RESOURCES_SRCS}"
     MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/mac/Info.plist
     )
 
@@ -154,7 +155,7 @@ if(OS_MACOSX)
     # Copy the helper app bundle into the Frameworks directory.
     COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${CEF_HELPER_APP}"
-            "${CEF_APP}/Contents/Frameworks/${CEF_HELPER_TARGET}.app"
+            "${CEF_APP}/Contents/Frameworks/${CEF_HELPER_OUTPUT_NAME}.app"
     # Copy the CEF framework into the Frameworks directory.
     COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${CEF_BINARY_DIR}/Chromium Embedded Framework.framework"
@@ -165,12 +166,12 @@ if(OS_MACOSX)
   # Fix the framework rpath in the main executable.
   FIX_MACOSX_MAIN_FRAMEWORK_RPATH(${CEF_TARGET})
 
-  if(NOT ${CMAKE_GENERATOR} STREQUAL "Xcode")
-    # Manually process and copy over resource files.
-    # The Xcode generator handles this via the set_target_properties RESOURCE directive.
-    set(PREFIXES "mac/")  # Remove these prefixes from input file paths.
-    COPY_MACOSX_RESOURCES("${CEFSIMPLE_RESOURCES_SRCS}" "${PREFIXES}" "${CEF_TARGET}" "${CMAKE_CURRENT_SOURCE_DIR}" "${CEF_APP}")
-  endif()
+  # Manually process and copy over resource files.
+  # The Xcode generator can support this via the set_target_properties RESOURCE
+  # directive but that doesn't properly handle nested resource directories.
+  # Remove these prefixes from input file paths.
+  set(PREFIXES "mac/")
+  COPY_MACOSX_RESOURCES("${CEFSIMPLE_RESOURCES_SRCS}" "${PREFIXES}" "${CEF_TARGET}" "${CMAKE_CURRENT_SOURCE_DIR}" "${CEF_APP}")
 endif()
 
 

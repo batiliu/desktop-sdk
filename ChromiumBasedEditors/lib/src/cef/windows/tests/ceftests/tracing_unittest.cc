@@ -8,9 +8,9 @@
 #include "include/cef_trace.h"
 #include "include/cef_waitable_event.h"
 #include "include/wrapper/cef_closure_task.h"
-#include "tests/ceftests/file_util.h"
 #include "tests/ceftests/test_handler.h"
 #include "tests/gtest/include/gtest/gtest.h"
+#include "tests/shared/browser/file_util.h"
 
 // Use the CEF version of the TRACE_* macros instead of the Chromium version.
 #undef USING_CHROMIUM_INCLUDES
@@ -81,7 +81,7 @@ class TracingTestHandler : public CefEndTracingCallback,
   void ReadTracingFile(const std::string& file_path) {
     EXPECT_FILE_THREAD();
 
-    EXPECT_TRUE(file_util::ReadFileToString(file_path, &trace_data_));
+    EXPECT_TRUE(client::file_util::ReadFileToString(file_path, &trace_data_));
     EXPECT_TRUE(CefDeleteFile(file_path, false));
 
     completion_event_->Signal();
@@ -290,6 +290,7 @@ class TracingTestHandler : public CefEndTracingCallback,
       case TT_TRACE_EVENT_ASYNC_END2:
         TRACE_EVENT_ASYNC_END2(kTraceTestCategory, "TT_TRACE_EVENT_ASYNC_END2",
                                100, "arg1", 1, "arg2", 2);
+        break;
       case TT_TRACE_EVENT_COPY_ASYNC_END0:
         TRACE_EVENT_COPY_ASYNC_END0(kTraceTestCategory,
                                     "TT_TRACE_EVENT_COPY_ASYNC_END0", 100);

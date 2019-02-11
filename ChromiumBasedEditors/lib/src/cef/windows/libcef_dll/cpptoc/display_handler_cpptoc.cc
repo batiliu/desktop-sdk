@@ -1,4 +1,4 @@
-// Copyright (c) 2017 The Chromium Embedded Framework Authors. All rights
+// Copyright (c) 2018 The Chromium Embedded Framework Authors. All rights
 // reserved. Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 //
@@ -9,7 +9,7 @@
 // implementations. See the translator.README.txt file in the tools directory
 // for more information.
 //
-// $hash=ae4395cea3553abdea6394d37325c40454505477$
+// $hash=0ba45406ca1fcca29b4d8085d6f7b3280477e13f$
 //
 
 #include "libcef_dll/cpptoc/display_handler_cpptoc.h"
@@ -161,6 +161,7 @@ display_handler_on_status_message(struct _cef_display_handler_t* self,
 int CEF_CALLBACK
 display_handler_on_console_message(struct _cef_display_handler_t* self,
                                    cef_browser_t* browser,
+                                   cef_log_severity_t level,
                                    const cef_string_t* message,
                                    const cef_string_t* source,
                                    int line) {
@@ -177,11 +178,59 @@ display_handler_on_console_message(struct _cef_display_handler_t* self,
 
   // Execute
   bool _retval = CefDisplayHandlerCppToC::Get(self)->OnConsoleMessage(
-      CefBrowserCToCpp::Wrap(browser), CefString(message), CefString(source),
-      line);
+      CefBrowserCToCpp::Wrap(browser), level, CefString(message),
+      CefString(source), line);
 
   // Return type: bool
   return _retval;
+}
+
+int CEF_CALLBACK
+display_handler_on_auto_resize(struct _cef_display_handler_t* self,
+                               cef_browser_t* browser,
+                               const cef_size_t* new_size) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return 0;
+  // Verify param: browser; type: refptr_diff
+  DCHECK(browser);
+  if (!browser)
+    return 0;
+  // Verify param: new_size; type: simple_byref_const
+  DCHECK(new_size);
+  if (!new_size)
+    return 0;
+
+  // Translate param: new_size; type: simple_byref_const
+  CefSize new_sizeVal = new_size ? *new_size : CefSize();
+
+  // Execute
+  bool _retval = CefDisplayHandlerCppToC::Get(self)->OnAutoResize(
+      CefBrowserCToCpp::Wrap(browser), new_sizeVal);
+
+  // Return type: bool
+  return _retval;
+}
+
+void CEF_CALLBACK
+display_handler_on_loading_progress_change(struct _cef_display_handler_t* self,
+                                           cef_browser_t* browser,
+                                           double progress) {
+  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+
+  DCHECK(self);
+  if (!self)
+    return;
+  // Verify param: browser; type: refptr_diff
+  DCHECK(browser);
+  if (!browser)
+    return;
+
+  // Execute
+  CefDisplayHandlerCppToC::Get(self)->OnLoadingProgressChange(
+      CefBrowserCToCpp::Wrap(browser), progress);
 }
 
 }  // namespace
@@ -197,6 +246,9 @@ CefDisplayHandlerCppToC::CefDisplayHandlerCppToC() {
   GetStruct()->on_tooltip = display_handler_on_tooltip;
   GetStruct()->on_status_message = display_handler_on_status_message;
   GetStruct()->on_console_message = display_handler_on_console_message;
+  GetStruct()->on_auto_resize = display_handler_on_auto_resize;
+  GetStruct()->on_loading_progress_change =
+      display_handler_on_loading_progress_change;
 }
 
 template <>

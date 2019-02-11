@@ -1,4 +1,4 @@
-// Copyright (c) 2017 The Chromium Embedded Framework Authors. All rights
+// Copyright (c) 2018 The Chromium Embedded Framework Authors. All rights
 // reserved. Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
 //
@@ -9,13 +9,14 @@
 // implementations. See the translator.README.txt file in the tools directory
 // for more information.
 //
-// $hash=6620dc6736041e4b366326edda388eac15296724$
+// $hash=3a3815c81622985a17849bb056e979a237f67841$
 //
 
 #include "libcef_dll/ctocpp/before_download_callback_ctocpp.h"
 
 // VIRTUAL METHODS - Body may be edited by hand.
 
+NO_SANITIZE("cfi-icall")
 void CefBeforeDownloadCallbackCToCpp::Continue(const CefString& download_path,
                                                bool show_dialog) {
   cef_before_download_callback_t* _struct = GetStruct();
