@@ -49,6 +49,8 @@ set(CEFCLIENT_BROWSER_BROWSER_SRCS
   browser/root_window_manager.h
   browser/scheme_test.cc
   browser/scheme_test.h
+  browser/server_test.cc
+  browser/server_test.h
   browser/temp_window.h
   browser/test_runner.cc
   browser/test_runner.h
@@ -76,7 +78,6 @@ set(CEFCLIENT_BROWSER_SHARED_BROWSER_SRCS
   ../shared/browser/main_message_loop_external_pump.h
   ../shared/browser/main_message_loop_std.cc
   ../shared/browser/main_message_loop_std.h
-  ../shared/browser/resource_util.h
   ../shared/browser/resource_util.h
   )
 source_group(shared\\\\browser FILES ${CEFCLIENT_BROWSER_SHARED_BROWSER_SRCS})
@@ -146,6 +147,8 @@ set(CEFCLIENT_LINUX_BROWSER_SRCS
   browser/dialog_handler_gtk.cc
   browser/dialog_handler_gtk.h
   browser/main_context_impl_posix.cc
+  browser/main_message_loop_multithreaded_gtk.cc
+  browser/main_message_loop_multithreaded_gtk.h
   browser/print_handler_gtk.cc
   browser/print_handler_gtk.h
   browser/resource_util_linux.cc
@@ -155,6 +158,8 @@ set(CEFCLIENT_LINUX_BROWSER_SRCS
   browser/root_window_views.h
   browser/temp_window_x11.cc
   browser/temp_window_x11.h
+  browser/util_gtk.cc
+  browser/util_gtk.h
   browser/views_menu_bar.cc
   browser/views_menu_bar.h
   browser/views_style.cc
@@ -314,8 +319,10 @@ set(CEFCLIENT_RESOURCES_RESOURCES_SRCS
   resources/performance2.html
   resources/preferences.html
   resources/response_filter.html
+  resources/server.html
   resources/transparency.html
   resources/urlrequest.html
+  resources/websocket.html
   resources/window.html
   resources/xmlhttprequest.html
   )
@@ -369,7 +376,8 @@ set(CEFCLIENT_RESOURCES_SRCS
 # Target executable names.
 set(CEF_TARGET "cefclient")
 if(OS_MACOSX)
-  set(CEF_HELPER_TARGET "cefclient Helper")
+  set(CEF_HELPER_TARGET "cefclient_Helper")
+  set(CEF_HELPER_OUTPUT_NAME "cefclient Helper")
 endif()
 
 # Logical target used to link the libcef library.
@@ -444,7 +452,7 @@ if(OS_MACOSX)
 
   # Output paths for the app bundles.
   set(CEF_APP "${CEF_TARGET_OUT_DIR}/${CEF_TARGET}.app")
-  set(CEF_HELPER_APP "${CEF_TARGET_OUT_DIR}/${CEF_HELPER_TARGET}.app")
+  set(CEF_HELPER_APP "${CEF_TARGET_OUT_DIR}/${CEF_HELPER_OUTPUT_NAME}.app")
 
   # Variable referenced from Info.plist files.
   set(PRODUCT_NAME "${CEF_TARGET}")
@@ -456,6 +464,7 @@ if(OS_MACOSX)
   target_link_libraries(${CEF_HELPER_TARGET} libcef_lib libcef_dll_wrapper ${CEF_STANDARD_LIBS})
   set_target_properties(${CEF_HELPER_TARGET} PROPERTIES
     MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/resources/mac/helper-Info.plist
+    OUTPUT_NAME ${CEF_HELPER_OUTPUT_NAME}
     )
 
   # Fix the framework rpath in the helper executable.
@@ -477,7 +486,7 @@ if(OS_MACOSX)
     # Copy the helper app bundle into the Frameworks directory.
     COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${CEF_HELPER_APP}"
-            "${CEF_APP}/Contents/Frameworks/${CEF_HELPER_TARGET}.app"
+            "${CEF_APP}/Contents/Frameworks/${CEF_HELPER_OUTPUT_NAME}.app"
     # Copy the CEF framework into the Frameworks directory.
     COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${CEF_BINARY_DIR}/Chromium Embedded Framework.framework"

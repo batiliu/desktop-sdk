@@ -36,15 +36,6 @@ class ClientAppRenderer : public ClientApp, public CefRenderProcessHandler {
       return NULL;
     }
 
-    virtual bool OnBeforeNavigation(CefRefPtr<ClientAppRenderer> app,
-                                    CefRefPtr<CefBrowser> browser,
-                                    CefRefPtr<CefFrame> frame,
-                                    CefRefPtr<CefRequest> request,
-                                    cef_navigation_type_t navigation_type,
-                                    bool is_redirect) {
-      return false;
-    }
-
     virtual void OnContextCreated(CefRefPtr<ClientAppRenderer> app,
                                   CefRefPtr<CefBrowser> browser,
                                   CefRefPtr<CefFrame> frame,
@@ -84,7 +75,7 @@ class ClientAppRenderer : public ClientApp, public CefRenderProcessHandler {
 
   ClientAppRenderer();
 
- private:
+ protected:
   // Creates all of the Delegate objects. Implemented by cefclient in
   // client_app_delegates_renderer.cc
   static void CreateDelegates(DelegateSet& delegates);
@@ -100,11 +91,6 @@ class ClientAppRenderer : public ClientApp, public CefRenderProcessHandler {
   void OnBrowserCreated(CefRefPtr<CefBrowser> browser) OVERRIDE;
   void OnBrowserDestroyed(CefRefPtr<CefBrowser> browser) OVERRIDE;
   CefRefPtr<CefLoadHandler> GetLoadHandler() OVERRIDE;
-  bool OnBeforeNavigation(CefRefPtr<CefBrowser> browser,
-                          CefRefPtr<CefFrame> frame,
-                          CefRefPtr<CefRequest> request,
-                          NavigationType navigation_type,
-                          bool is_redirect) OVERRIDE;
   void OnContextCreated(CefRefPtr<CefBrowser> browser,
                         CefRefPtr<CefFrame> frame,
                         CefRefPtr<CefV8Context> context) OVERRIDE;
@@ -123,7 +109,7 @@ class ClientAppRenderer : public ClientApp, public CefRenderProcessHandler {
                                 CefProcessId source_process,
                                 CefRefPtr<CefProcessMessage> message) OVERRIDE;
 
- protected:
+ private:
   // Set of supported Delegates.
   DelegateSet delegates_;
 

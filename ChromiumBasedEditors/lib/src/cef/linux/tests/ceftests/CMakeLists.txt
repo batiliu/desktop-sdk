@@ -19,7 +19,6 @@ set(CEFTESTS_SRCS
   draggable_regions_unittest.cc
   file_util_unittest.cc
   frame_unittest.cc
-  geolocation_unittest.cc
   image_unittest.cc
   image_util.cc
   image_util.h
@@ -45,6 +44,7 @@ set(CEFTESTS_SRCS
   run_all_unittests.cc
   scheme_handler_unittest.cc
   scoped_temp_dir_unittest.cc
+  server_unittest.cc
   stream_resource_handler_unittest.cc
   stream_unittest.cc
   string_unittest.cc
@@ -118,7 +118,6 @@ set(CEFTESTS_SHARED_BROWSER_SRCS
   ../shared/browser/main_message_loop_external_pump.h
   ../shared/browser/main_message_loop_std.cc
   ../shared/browser/main_message_loop_std.h
-  ../shared/browser/resource_util.h
   ../shared/browser/resource_util.h
   )
 set(CEFTESTS_SHARED_BROWSER_SRCS_LINUX
@@ -301,7 +300,8 @@ set(UNITTESTS_RESOURCES_SRCS
 # Target executable names.
 set(CEF_TARGET "ceftests")
 if(OS_MACOSX)
-  set(CEF_HELPER_TARGET "ceftests Helper")
+  set(CEF_HELPER_TARGET "ceftests_Helper")
+  set(CEF_HELPER_OUTPUT_NAME "ceftests Helper")
 endif()
 
 # Logical target used to link the libcef library.
@@ -349,7 +349,7 @@ endif()
 if(OS_MACOSX)
   # Output paths for the app bundles.
   set(CEF_APP "${CEF_TARGET_OUT_DIR}/${CEF_TARGET}.app")
-  set(CEF_HELPER_APP "${CEF_TARGET_OUT_DIR}/${CEF_HELPER_TARGET}.app")
+  set(CEF_HELPER_APP "${CEF_TARGET_OUT_DIR}/${CEF_HELPER_OUTPUT_NAME}.app")
 
   # Variable referenced from Info.plist files.
   set(PRODUCT_NAME "${CEF_TARGET}")
@@ -361,6 +361,7 @@ if(OS_MACOSX)
   target_link_libraries(${CEF_HELPER_TARGET} libcef_lib libcef_dll_wrapper cef_gtest ${CEF_STANDARD_LIBS})
   set_target_properties(${CEF_HELPER_TARGET} PROPERTIES
     MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/resources/mac/helper-Info.plist
+    OUTPUT_NAME ${CEF_HELPER_OUTPUT_NAME}
     )
 
   # Fix the framework rpath in the helper executable.
@@ -382,7 +383,7 @@ if(OS_MACOSX)
     # Copy the helper app bundle into the Frameworks directory.
     COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${CEF_HELPER_APP}"
-            "${CEF_APP}/Contents/Frameworks/${CEF_HELPER_TARGET}.app"
+            "${CEF_APP}/Contents/Frameworks/${CEF_HELPER_OUTPUT_NAME}.app"
     # Copy the CEF framework into the Frameworks directory.
     COMMAND ${CMAKE_COMMAND} -E copy_directory
             "${CEF_BINARY_DIR}/Chromium Embedded Framework.framework"

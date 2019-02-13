@@ -394,6 +394,7 @@ void ClientHandler::OnFullscreenModeChange(CefRefPtr<CefBrowser> browser,
 }
 
 bool ClientHandler::OnConsoleMessage(CefRefPtr<CefBrowser> browser,
+                                     cef_log_severity_t level,
                                      const CefString& message,
                                      const CefString& source,
                                      int line) {
@@ -402,6 +403,24 @@ bool ClientHandler::OnConsoleMessage(CefRefPtr<CefBrowser> browser,
   FILE* file = fopen(console_log_file_.c_str(), "a");
   if (file) {
     std::stringstream ss;
+    ss << "Level: ";
+    switch (level) {
+      case LOGSEVERITY_DEBUG:
+        ss << "Debug" << NEWLINE;
+        break;
+      case LOGSEVERITY_INFO:
+        ss << "Info" << NEWLINE;
+        break;
+      case LOGSEVERITY_WARNING:
+        ss << "Warn" << NEWLINE;
+        break;
+      case LOGSEVERITY_ERROR:
+        ss << "Error" << NEWLINE;
+        break;
+      default:
+        NOTREACHED();
+        break;
+    }
     ss << "Message: " << message.ToString() << NEWLINE
        << "Source: " << source.ToString() << NEWLINE << "Line: " << line
        << NEWLINE << "-----------------------" << NEWLINE;
@@ -476,18 +495,6 @@ void ClientHandler::OnTakeFocus(CefRefPtr<CefBrowser> browser, bool next) {
   CEF_REQUIRE_UI_THREAD();
 
   NotifyTakeFocus(next);
-}
-
-bool ClientHandler::OnRequestGeolocationPermission(
-    CefRefPtr<CefBrowser> browser,
-    const CefString& requesting_url,
-    int request_id,
-    CefRefPtr<CefGeolocationCallback> callback) {
-  CEF_REQUIRE_UI_THREAD();
-
-  // Allow geolocation access from all websites.
-  callback->Continue(true);
-  return true;
 }
 
 bool ClientHandler::OnPreKeyEvent(CefRefPtr<CefBrowser> browser,
@@ -628,6 +635,7 @@ void ClientHandler::OnLoadError(CefRefPtr<CefBrowser> browser,
 bool ClientHandler::OnBeforeBrowse(CefRefPtr<CefBrowser> browser,
                                    CefRefPtr<CefFrame> frame,
                                    CefRefPtr<CefRequest> request,
+                                   bool user_gesture,
                                    bool is_redirect) {
   CEF_REQUIRE_UI_THREAD();
 

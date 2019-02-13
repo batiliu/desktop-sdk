@@ -22,7 +22,14 @@ namespace {
 class ClientRequestContextHandler : public CefRequestContextHandler,
                                     public CefExtensionHandler {
  public:
-  ClientRequestContextHandler() {}
+  ClientRequestContextHandler() {
+    CefRefPtr<CefCommandLine> command_line =
+        CefCommandLine::GetGlobalCommandLine();
+    if (command_line->HasSwitch(switches::kRequestContextBlockCookies)) {
+      // Use a cookie manager that neither stores nor retrieves cookies.
+      cookie_manager_ = CefCookieManager::GetBlockingManager();
+    }
+  }
 
   // CefRequestContextHandler methods:
   bool OnBeforePluginLoad(const CefString& mime_type,
@@ -73,6 +80,10 @@ class ClientRequestContextHandler : public CefRequestContextHandler,
     }
   }
 
+  CefRefPtr<CefCookieManager> GetCookieManager() OVERRIDE {
+    return cookie_manager_;
+  }
+
   // CefExtensionHandler methods:
   void OnExtensionLoaded(CefRefPtr<CefExtension> extension) OVERRIDE {
     CEF_REQUIRE_UI_THREAD();
@@ -99,6 +110,8 @@ class ClientRequestContextHandler : public CefRequestContextHandler,
   }
 
  private:
+  CefRefPtr<CefCookieManager> cookie_manager_;
+
   IMPLEMENT_REFCOUNTING(ClientRequestContextHandler);
   DISALLOW_COPY_AND_ASSIGN(ClientRequestContextHandler);
 };
@@ -145,6 +158,11 @@ scoped_refptr<RootWindow> RootWindowManager::CreateRootWindowAsPopup(
     CefRefPtr<CefClient>& client,
     CefBrowserSettings& settings) {
   CEF_REQUIRE_UI_THREAD();
+
+  if (!temp_window_) {
+    // TempWindow must be created on the UI thread.
+    temp_window_.reset(new TempWindow());
+  }
 
   MainContext::Get()->PopulateBrowserSettings(&settings);
 
@@ -377,8 +395,9 @@ void RootWindowManager::OnRootWindowDestroyed(RootWindow* root_window) {
   }
 
   if (terminate_when_all_windows_closed_ && root_windows_.empty()) {
-    // Quit the main message loop after all windows have closed.
-    MainMessageLoop::Get()->Quit();
+    // All windows have closed. Clean up on the UI thread.
+    CefPostTask(TID_UI, base::Bind(&RootWindowManager::CleanupOnUIThread,
+                                   base::Unretained(this)));
   }
 }
 
@@ -425,6 +444,18 @@ void RootWindowManager::CreateExtensionWindow(
     CreateRootWindowAsExtension(extension, source_bounds, parent_window,
                                 close_callback, false, with_osr);
   }
+}
+
+void RootWindowManager::CleanupOnUIThread() {
+  CEF_REQUIRE_UI_THREAD();
+
+  if (temp_window_) {
+    // TempWindow must be destroyed on the UI thread.
+    temp_window_.reset(nullptr);
+  }
+
+  // Quit the main message loop.
+  MainMessageLoop::Get()->Quit();
 }
 
 }  // namespace client
